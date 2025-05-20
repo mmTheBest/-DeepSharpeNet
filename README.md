@@ -108,13 +108,6 @@ python eval.py processed_data/output.csv model_checkpoint/model.pt --win 30
 python backtest.py eval_out/predictions.csv
 ```
 
-## Performance Results
-
-| Model                           | Return   | Sharpe  | Max Drawdown |
-|---------------------------------|----------|---------|--------------|
-| Basic model (target_shift=1)    | +56.55%  | 1.32    | 21.97%       |
-| Risk-adjusted (target_shift=1)  | +0.55%   | 0.22    | 37.02%       |
-| Buy & Hold                      | -9.10%   | -       | -            |
 
 ## Key Findings
 
@@ -157,24 +150,3 @@ The codebase follows a modular design with four main components:
    - Calculates performance metrics (return, Sharpe ratio, drawdown)
    - Compares to buy-and-hold benchmark
 
-## Key Files
-
-- `dataset.py`: Implements sliding window dataset for time series prediction
-- `model.py`: Defines the CNN-LSTM architecture with attention
-- `index.py`: Contains technical indicator calculation functions
-
-## Recommendations
-
-Based on our experiments:
-- Use target_shift=1 for best performance
-- Apply risk-adjusted returns for more stable models
-- Prefer raw features for less overfitting
-- Balanced sampling helps with class imbalance
-
-## Future Work
-
-Potential improvements:
-- Explore transformer-based architectures
-- Implement multi-task learning for joint return/risk prediction
-- Dynamic position sizing based on prediction confidence
-- Incorporate alternative data sources 
