@@ -77,8 +77,6 @@ def calculate_rsi(df, window=14):
 def calculate_kdj_yuan(df, n):
     required_columns = ['high', 'low', 'close']
     for col in required_columns:
-        if col not in df.columns:
-            raise ValueError(f'缺少列: {col}')
     low_n = df['low'].rolling(window=n, min_periods=1).min()
     high_n = df['high'].rolling(window=n, min_periods=1).max()
     rsv = (df['close'] - low_n) / (high_n - low_n) * 100
@@ -122,8 +120,6 @@ def calculate_bollinger_bands(df, window=20):
     return bollinger_signal
 
 def calculate_relative_coefficients(df):
-    if not {'high', 'low', 'open', 'close'}.issubset(df.columns):
-        raise ValueError("DataFrame 必须包含 'high', 'low', 'open', 'close' 列")
     df['high_low_Coef'] = (df['high'] - df['low']) / df['low']
     df['open_close_coef'] = (df['close'] - df['open']) / df['open']
     return df[['high_low_Coef', 'open_close_coef']]
@@ -397,16 +393,12 @@ def CTM(df):
     return df['CTM']
 
 def CTR(df):
-    if 'turn' not in df.columns:
-        print("DataFrame 中缺少 'turn' 列，跳过计算。")
         return None
     df['CTR'] = (df['turn'] - df['turn'].shift(1)) / df['turn'].shift(1)
     return df['CTR']
 
 def calculate_PCCP(df):
     required_columns = ['high', 'low', 'close']
-    if not all((col in df.columns for col in required_columns)):
-        raise ValueError(f'DataFrame必须包含以下列：{required_columns}')
     pccp = df.apply(lambda row: (2 * row['close'] - row['low'] - row['high']) / (row['high'] - row['low']) if row['high'] != row['low'] else 1, axis=1)
     df['PCCP'] = pccp
     return df['PCCP']
@@ -457,8 +449,6 @@ def calculate_MACD(df, periods, column_name):
     return df[column_name]
 
 def calculate_PCTV(df, window, column_name):
-    if 'volume' not in df.columns:
-        raise ValueError("DataFrame必须包含 'volume' 列")
     tv_max = np.full(len(df), np.nan)
     tv_min = np.full(len(df), np.nan)
     for i in range(window, len(df)):
@@ -473,8 +463,6 @@ def calculate_PCTV(df, window, column_name):
 def calculate_kdj(df, n):
     required_columns = ['high', 'low', 'close']
     for col in required_columns:
-        if col not in df.columns:
-            raise ValueError(f'缺少列: {col}')
     low_n = df['low'].rolling(window=n, min_periods=1).min()
     high_n = df['high'].rolling(window=n, min_periods=1).max()
     rsv = (df['close'] - low_n) / (high_n - low_n) * 100
@@ -495,8 +483,6 @@ def calculate_kdj(df, n):
 def calculate_ITS(df, n, column_name):
     required_columns = [f'K_{n}', f'D_{n}']
     for col in required_columns:
-        if col not in df.columns:
-            raise ValueError(f'缺少列: {col}')
     Kt = df[f'K_{n}']
     Dt = df[f'D_{n}']
     ITS = pd.Series(0, index=df.index)
@@ -545,8 +531,6 @@ def calculate_cci(df, n, column_name):
 def calculate_mfi(df, n, column_name):
     required_columns = ['high', 'low', 'close', 'volume']
     for col in required_columns:
-        if col not in df.columns:
-            raise ValueError(f'缺少列: {col}')
     tp = (df['high'] + df['low'] + df['close']) / 3
     rmf = tp * df['volume']
     positive_flow = np.where(tp > tp.shift(1), rmf, 0)
